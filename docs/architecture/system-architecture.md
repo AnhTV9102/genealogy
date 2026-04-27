@@ -252,12 +252,19 @@ Dựa trên PersonController hiện tại:
   - Request: `CreatePersonRequest` (name, gender, birthDate, etc.)
   - Response: `PersonResponse`
 
-Các API dự kiến bổ sung (theo pattern CRUD):
+- **GET** `/api/v1/persons/{id}` - Lấy thông tin người theo ID ✅ **Đã triển khai**
+  - Response: `PersonResponse`
 
-- **GET** `/api/v1/persons/{id}` - Lấy thông tin người theo ID
-- **PUT** `/api/v1/persons/{id}` - Cập nhật thông tin người
-- **DELETE** `/api/v1/persons/{id}` - Xóa người
-- **GET** `/api/v1/persons` - Liệt kê tất cả người (có phân trang)
+- **PUT** `/api/v1/persons/{id}` - Cập nhật thông tin người ✅ **Đã triển khai**
+  - Request: `UpdatePersonRequest` (fullName, dateOfDeath)
+  - Response: `PersonResponse`
+
+- **DELETE** `/api/v1/persons/{id}` - Xóa người ✅ **Đã triển khai**
+  - Response: `204 No Content`
+
+- **GET** `/api/v1/persons` - Liệt kê tất cả người (có phân trang) ✅ **Đã triển khai**
+  - Query params: `page=0&size=10` (default Spring Boot Pageable)
+  - Response: `Page<PersonResponse>` (với metadata phân trang)
 
 ### Giai Đoạn 2
 
