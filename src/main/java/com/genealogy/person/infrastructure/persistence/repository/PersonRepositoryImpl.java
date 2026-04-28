@@ -34,6 +34,11 @@ public class PersonRepositoryImpl implements PersonRepository {
         jpaRepository.deleteById(id);
     }
 
+    @Override
+    public Page<Person> findAll(Pageable pageable) {
+        return jpaRepository.findAll(pageable)
+                .map(PersonPersistenceMapper::toDomain);
+    }
 
     public Page<Person> findAllPaginated(Pageable pageable) {
         return jpaRepository.findAll(pageable)

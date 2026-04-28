@@ -10,6 +10,8 @@ import com.genealogy.relationship.domain.model.Relationship;
 import com.genealogy.relationship.domain.model.RelationshipType;
 import com.genealogy.relationship.domain.repository.RelationshipRepository;
 import com.genealogy.relationship.domain.repository.PersonTreeRepository;
+import com.genealogy.common.exception.ResourceNotFoundException;
+import com.genealogy.common.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +36,8 @@ public class RelationshipService {
 
         // Check for duplicate relationships
         if (relationshipRepository.existsByFromPersonIdAndToPersonIdAndType(
-                request.fromPersonId(), request.toPersonId(), request.type())) {
-            throw new RuntimeException("Relationship already exists between these persons");
+                request.fromPersonId(), request.toPersonId(), type.name())) {
+            throw new BusinessException("Relationship already exists between these persons");
         }
 
         Relationship relationship = Relationship.create(
@@ -51,14 +53,14 @@ public class RelationshipService {
 
     public RelationshipResponse getById(Long id) {
         Relationship relationship = relationshipRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Relationship not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Relationship", id));
 
         return RelationshipMapper.toResponse(relationship);
     }
 
     public void deleteById(Long id) {
         if (relationshipRepository.findById(id).isEmpty()) {
-            throw new RuntimeException("Relationship not found with id: " + id);
+            throw new ResourceNotFoundException("Relationship", id);
         }
         relationshipRepository.deleteById(id);
     }
@@ -158,7 +160,7 @@ public class RelationshipService {
 
     private void validatePersonExists(Long personId) {
         if (personRepository.findById(personId).isEmpty()) {
-            throw new RuntimeException("Person not found with id: " + personId);
+            throw new ResourceNotFoundException("Person", personId);
         }
     }
 }
