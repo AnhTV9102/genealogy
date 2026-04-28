@@ -5,6 +5,7 @@ import com.genealogy.person.application.dto.PersonResponse;
 import com.genealogy.person.application.dto.UpdatePersonRequest;
 import com.genealogy.person.application.service.PersonService;
 import com.genealogy.relationship.application.service.RelationshipService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,7 +23,7 @@ public class PersonController {
     private final RelationshipService relationshipService;
 
     @PostMapping
-    public PersonResponse create(@RequestBody CreatePersonRequest request) {
+    public PersonResponse create(@RequestBody @Valid CreatePersonRequest request) {
         return personService.create(request);
     }
 
@@ -37,7 +38,7 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public PersonResponse update(@PathVariable Long id, @RequestBody UpdatePersonRequest request) {
+    public PersonResponse update(@PathVariable Long id, @RequestBody @Valid UpdatePersonRequest request) {
         return personService.update(id, request);
     }
 
@@ -59,5 +60,19 @@ public class PersonController {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(spouse);
+    }
+
+    @GetMapping("/{personId}/ancestors")
+    public List<PersonResponse> getAncestors(
+            @PathVariable Long personId,
+            @RequestParam(required = false) Integer generations) {
+        return relationshipService.getAncestors(personId, generations);
+    }
+
+    @GetMapping("/{personId}/descendants")
+    public List<PersonResponse> getDescendants(
+            @PathVariable Long personId,
+            @RequestParam(required = false) Integer generations) {
+        return relationshipService.getDescendants(personId, generations);
     }
 }

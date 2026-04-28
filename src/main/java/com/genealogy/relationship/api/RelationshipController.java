@@ -4,6 +4,7 @@ import com.genealogy.relationship.application.dto.CreateRelationshipRequest;
 import com.genealogy.relationship.application.dto.RelationshipResponse;
 import com.genealogy.relationship.application.service.RelationshipService;
 import com.genealogy.person.application.dto.PersonResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class RelationshipController {
     private final RelationshipService relationshipService;
 
     @PostMapping("/relationships")
-    public RelationshipResponse create(@RequestBody CreateRelationshipRequest request) {
+    public RelationshipResponse create(@RequestBody @Valid CreateRelationshipRequest request) {
         return relationshipService.create(request);
     }
 
