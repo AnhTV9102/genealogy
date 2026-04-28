@@ -60,4 +60,18 @@ public class PersonController {
         }
         return ResponseEntity.ok(spouse);
     }
+
+    @GetMapping("/{personId}/ancestors")
+    public List<PersonResponse> getAncestors(
+            @PathVariable Long personId,
+            @RequestParam(required = false) Integer generations) {
+        return relationshipService.getAncestors(personId, generations);
+    }
+
+    @GetMapping("/{personId}/descendants")
+    public List<PersonResponse> getDescendants(
+            @PathVariable Long personId,
+            @RequestParam(required = false) Integer generations) {
+        return relationshipService.getDescendants(personId, generations);
+    }
 }

@@ -303,13 +303,19 @@ Dựa trên PersonController hiện tại:
 - **GET** `/api/v1/persons/{personId}/spouse` - Lấy vợ/chồng (nếu có) ✅ **Đã triển khai**
   - Response: `PersonResponse` (hoặc null)
 
-##### 🌳 Duyệt Cây Gia Phả (Giai Đoạn 3 Preview)
+### Giai Đoạn 3
 
-- **GET** `/api/v1/persons/{personId}/ancestors` - Lấy tất cả tổ tiên
+- Duyệt cây (tổ tiên / hậu duệ)
+
+#### 📋 API Endpoints cho Module Tree Traversal
+
+##### 🌳 Duyệt Cây Gia Phả
+
+- **GET** `/api/v1/persons/{personId}/ancestors` - Lấy tất cả tổ tiên ✅ **Đã triển khai**
   - Query params: `generations` (optional limit)
   - Response: `List<PersonResponse>` (theo thứ tự thế hệ)
 
-- **GET** `/api/v1/persons/{personId}/descendants` - Lấy tất cả hậu duệ
+- **GET** `/api/v1/persons/{personId}/descendants` - Lấy tất cả hậu duệ ✅ **Đã triển khai**
   - Query params: `generations` (optional limit)
   - Response: `List<PersonResponse>` (theo thứ tự thế hệ)
 
@@ -323,14 +329,75 @@ Dựa trên PersonController hiện tại:
   - Query params: `personId`, `type`, `page`, `size`
   - Response: `Page<RelationshipResponse>`
 
-### Giai Đoạn 3
+### Giai Đoạn 3 (Hiện Tại - Đã Triển Khai)
 
-- Duyệt cây (tổ tiên / hậu duệ)
+- ✅ Module Tree Traversal (Ancestors/Descendants)
+- ✅ Closure Table Pattern Implementation
+- ✅ Tree traversal APIs (ancestors, descendants with generation limits)
 
 ### Giai Đoạn 4
 
 - Tối ưu hiệu năng (caching, indexing)
 - Bảo mật (RBAC)
+- Validation & constraint rules
+
+## 🌳 Mô Hình Duyệt Cây (Tree Traversal)
+
+Hệ thống sử dụng **Closure Table Pattern** cho việc duyệt cây gia phả một cách hiệu quả:
+
+### Nguyên Lý Hoạt Động
+
+```
+Person A (Ancestor)
+    ↓
+Person B (Parent)
+    ↓
+Person C (Child)
+    ↓
+Person D (Descendant)
+```
+
+**person_tree table** lưu trữ **tất cả** các mối quan hệ tổ tiên-hậu duệ:
+
+| ancestor_id | descendant_id | depth | meaning |
+| --- | --- | --- | --- |
+| A | A | 0 | Self-relationship |
+| A | B | 1 | A is parent of B |
+| A | C | 2 | A is grandparent of C |
+| A | D | 3 | A is great-grandparent of D |
+| B | B | 0 | Self-relationship |
+| B | C | 1 | B is parent of C |
+| B | D | 2 | B is grandparent of D |
+
+### Ưu Điểm
+
+- ✅ **Fast queries**: O(1) để lấy ancestor/descendant với depth cụ thể
+- ✅ **Easy filtering**: Query by generation (depth) không cần recursion
+- ✅ **Space efficient**: Chỉ lưu những gì cần thiết
+- ✅ **Scalable**: Hoạt động tốt với cây lớn
+
+### Hiện Thực Chi Tiết
+
+- **PersonTree domain model**: Đại diện cho một mối quan hệ tổ tiên-hậu duệ
+- **PersonTreeRepository**: Giao diện domain cho truy vấn tree
+- **PersonTreeRepositoryImpl**: Triển khai sử dụng JPA
+- **JpaPersonTreeRepository**: Custom queries cho person_tree table
+
+### API Usage
+
+```bash
+# Lấy cha mẹ (depth = 1)
+GET /api/v1/persons/123/ancestors?generations=1
+
+# Lấy tổ tiên 3 thế hệ
+GET /api/v1/persons/123/ancestors?generations=3
+
+# Lấy tất cả hậu duệ
+GET /api/v1/persons/123/descendants
+
+# Lấy con cái và cháu (2 thế hệ)
+GET /api/v1/persons/123/descendants?generations=2
+```
 
 ## 🧩 Tóm Tắt
 
