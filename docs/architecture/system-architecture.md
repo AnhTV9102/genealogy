@@ -164,6 +164,9 @@ id BIGINT PK
 from_person_id BIGINT
 to_person_id BIGINT
 type VARCHAR
+subtype VARCHAR
+start_date DATE
+end_date DATE
 created_at TIMESTAMP
 ```
 
@@ -269,6 +272,56 @@ Dựa trên PersonController hiện tại:
 ### Giai Đoạn 2
 
 - Module Relationship (logic đồ thị cốt lõi)
+
+#### 📋 API Endpoints cho Module Relationship
+
+##### 🔗 Quản Lý Mối Quan Hệ Cơ Bản
+
+- **POST** `/api/v1/relationships` - Tạo mối quan hệ mới ✅ **Đã triển khai**
+  - Request: `CreateRelationshipRequest` (fromPersonId, toPersonId, type)
+  - Response: `RelationshipResponse`
+  - Validation: Kiểm tra tồn tại của cả hai person, không tạo quan hệ trùng lặp
+
+- **GET** `/api/v1/relationships/{id}` - Lấy thông tin mối quan hệ theo ID ✅ **Đã triển khai**
+  - Response: `RelationshipResponse`
+
+- **DELETE** `/api/v1/relationships/{id}` - Xóa mối quan hệ ✅ **Đã triển khai**
+  - Response: `204 No Content`
+
+##### 👨‍👩‍👧‍👦 Quan Hệ Gia Đình
+
+- **GET** `/api/v1/persons/{personId}/relationships` - Lấy tất cả mối quan hệ của một người ✅ **Đã triển khai**
+  - Query params: `type` (optional filter), `direction` (INCOMING/OUTGOING/BOTH)
+  - Response: `List<RelationshipResponse>`
+
+- **GET** `/api/v1/persons/{personId}/parents` - Lấy danh sách cha mẹ ✅ **Đã triển khai**
+  - Response: `List<PersonResponse>`
+
+- **GET** `/api/v1/persons/{personId}/children` - Lấy danh sách con cái ✅ **Đã triển khai**
+  - Response: `List<PersonResponse>`
+
+- **GET** `/api/v1/persons/{personId}/spouse` - Lấy vợ/chồng (nếu có) ✅ **Đã triển khai**
+  - Response: `PersonResponse` (hoặc null)
+
+##### 🌳 Duyệt Cây Gia Phả (Giai Đoạn 3 Preview)
+
+- **GET** `/api/v1/persons/{personId}/ancestors` - Lấy tất cả tổ tiên
+  - Query params: `generations` (optional limit)
+  - Response: `List<PersonResponse>` (theo thứ tự thế hệ)
+
+- **GET** `/api/v1/persons/{personId}/descendants` - Lấy tất cả hậu duệ
+  - Query params: `generations` (optional limit)
+  - Response: `List<PersonResponse>` (theo thứ tự thế hệ)
+
+##### 🔍 Tìm Kiếm & Validation
+
+- **GET** `/api/v1/relationships/validate` - Validate mối quan hệ tiềm năng
+  - Query params: `fromPersonId`, `toPersonId`, `type`
+  - Response: `ValidationResult` (isValid, conflicts, suggestions)
+
+- **GET** `/api/v1/relationships/search` - Tìm kiếm mối quan hệ
+  - Query params: `personId`, `type`, `page`, `size`
+  - Response: `Page<RelationshipResponse>`
 
 ### Giai Đoạn 3
 
