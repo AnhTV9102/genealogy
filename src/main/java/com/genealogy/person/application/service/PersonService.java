@@ -1,5 +1,6 @@
 package com.genealogy.person.application.service;
 
+import com.genealogy.common.exception.ResourceNotFoundException;
 import com.genealogy.person.application.dto.CreatePersonRequest;
 import com.genealogy.person.application.dto.PersonResponse;
 import com.genealogy.person.application.dto.UpdatePersonRequest;
@@ -7,7 +8,6 @@ import com.genealogy.person.application.mapper.PersonMapper;
 import com.genealogy.person.domain.model.Gender;
 import com.genealogy.person.domain.model.Person;
 import com.genealogy.person.domain.repository.PersonRepository;
-import com.genealogy.common.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,53 +17,56 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PersonService {
 
-    private final PersonRepository personRepository;
+  private final PersonRepository personRepository;
 
-    public PersonResponse create(CreatePersonRequest request) {
+  public PersonResponse create(CreatePersonRequest request) {
 
-        Person person = Person.create(
-                request.fullName(),
-                Gender.valueOf(request.gender().toUpperCase()),
-                request.dateOfBirth()
-        );
+    Person person =
+        Person.create(
+            request.fullName(),
+            Gender.valueOf(request.gender().toUpperCase()),
+            request.dateOfBirth());
 
-        Person saved = personRepository.save(person);
+    Person saved = personRepository.save(person);
 
-        return PersonMapper.toResponse(saved);
+    return PersonMapper.toResponse(saved);
+  }
+
+  public PersonResponse getById(Long id) {
+    Person person =
+        personRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Person", id));
+
+    return PersonMapper.toResponse(person);
+  }
+
+  public PersonResponse update(Long id, UpdatePersonRequest request) {
+    Person person =
+        personRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Person", id));
+
+    if (request.fullName() != null && !request.fullName().isBlank()) {
+      person.changeName(request.fullName());
     }
 
-    public PersonResponse getById(Long id) {
-        Person person = personRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", id));
-
-        return PersonMapper.toResponse(person);
+    if (request.dateOfDeath() != null) {
+      person.markAsDeceased(request.dateOfDeath());
     }
 
-    public PersonResponse update(Long id, UpdatePersonRequest request) {
-        Person person = personRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Person", id));
+    Person updated = personRepository.save(person);
+    return PersonMapper.toResponse(updated);
+  }
 
-        if (request.fullName() != null && !request.fullName().isBlank()) {
-            person.changeName(request.fullName());
-        }
-
-        if (request.dateOfDeath() != null) {
-            person.markAsDeceased(request.dateOfDeath());
-        }
-
-        Person updated = personRepository.save(person);
-        return PersonMapper.toResponse(updated);
+  public void deleteById(Long id) {
+    if (personRepository.findById(id).isEmpty()) {
+      throw new ResourceNotFoundException("Person", id);
     }
+    personRepository.deleteById(id);
+  }
 
-    public void deleteById(Long id) {
-        if (personRepository.findById(id).isEmpty()) {
-            throw new ResourceNotFoundException("Person", id);
-        }
-        personRepository.deleteById(id);
-    }
-
-    public Page<PersonResponse> listAll(Pageable pageable) {
-        return personRepository.findAll(pageable)
-                .map(PersonMapper::toResponse);
-    }
+  public Page<PersonResponse> listAll(Pageable pageable) {
+    return personRepository.findAll(pageable).map(PersonMapper::toResponse);
+  }
 }

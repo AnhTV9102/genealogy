@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 /**
- * JPA Entity for person_tree table (Closure Table pattern).
- * This table stores ancestor-descendant relationships for efficient tree traversal.
+ * JPA Entity for person_tree table (Closure Table pattern). This table stores ancestor-descendant
+ * relationships for efficient tree traversal.
  */
 @Entity
 @Table(name = "person_tree")
@@ -16,15 +16,14 @@ import lombok.*;
 @IdClass(PersonTreeEntityId.class)
 public class PersonTreeEntity {
 
-    @Id
-    @Column(name = "ancestor_id", nullable = false)
-    private Long ancestorId;
+  @Id
+  @Column(name = "ancestor_id", nullable = false)
+  private Long ancestorId;
 
-    @Id
-    @Column(name = "descendant_id", nullable = false)
-    private Long descendantId;
+  @Id
+  @Column(name = "descendant_id", nullable = false)
+  private Long descendantId;
 
-    @Column(nullable = false)
-    private Integer depth;
+  @Column(nullable = false)
+  private Integer depth;
 }
-
