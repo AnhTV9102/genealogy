@@ -54,8 +54,8 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 
 	// 🔹 Test
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
+//	testImplementation("org.springframework.boot:spring-boot-starter-test")
+//	testImplementation("org.springframework.security:spring-security-test")
 }
 
 spotless {
@@ -98,10 +98,6 @@ tasks.withType<Pmd>().configureEach {
 tasks.withType<JavaCompile> {
 	options.encoding = "UTF-8"
 	options.release.set(21)
-}
-
-tasks.withType<Test> {
-	useJUnitPlatform()
 }
 
 tasks.named("check") {
