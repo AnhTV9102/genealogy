@@ -3,7 +3,7 @@ services:
     name: genealogy-api
     runtime: docker
     plan: free
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./deploy/Dockerfile
     autoDeploy: true
     healthCheckPath: /actuator/health
     envVars:

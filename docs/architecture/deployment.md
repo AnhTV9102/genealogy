@@ -42,9 +42,18 @@ SPRING_PROFILES_ACTIVE=deploy
 
 ---
 
-## 4) Render Blueprint (`render.yaml`)
+## 4) Cấu trúc thư mục deploy
 
-Repo đã có sẵn `render.yaml` để Render tạo đồng thời:
+Để tách biệt artifact triển khai khỏi mã ứng dụng, các file deploy được đặt trong thư mục `deploy/`:
+
+- `deploy/Dockerfile`
+- `deploy/render.yaml`
+
+---
+
+## 5) Render Blueprint (`deploy/render.yaml`)
+
+Repo đã có sẵn `deploy/render.yaml` để Render tạo đồng thời:
 - 1 Web Service (`genealogy-api`)
 - 1 PostgreSQL database (`genealogy-postgres`)
 
@@ -52,11 +61,11 @@ Các biến DB được map tự động từ resource database sang web service
 
 ---
 
-## 5) Quy trình deploy
+## 6) Quy trình deploy
 
 1. Push code lên GitHub/GitLab.
 2. Vào Render → **New** → **Blueprint**.
-3. Chọn repo chứa `render.yaml`.
+3. Chọn repo và trỏ tới blueprint file: `deploy/render.yaml`.
 4. Render sẽ provision database + web service.
 5. Theo dõi log lần khởi động đầu tiên:
    - App start thành công
@@ -66,7 +75,7 @@ Các biến DB được map tự động từ resource database sang web service
 
 ---
 
-## 6) Kiểm tra sau deploy (post-deploy)
+## 7) Kiểm tra sau deploy (post-deploy)
 
 - API trả về 200 cho endpoint health.
 - App kết nối DB thành công (không lỗi datasource timeout/auth).
@@ -75,7 +84,7 @@ Các biến DB được map tự động từ resource database sang web service
 
 ---
 
-## 7) Rollback nhanh
+## 8) Rollback nhanh
 
 Nếu release lỗi:
 1. Trên Render, chọn service `genealogy-api`.
@@ -85,7 +94,7 @@ Nếu release lỗi:
 
 ---
 
-## 8) Local run (tham khảo)
+## 9) Local run (tham khảo)
 
 ```bash
 ./gradlew bootRun --args='--spring.profiles.active=local'
