@@ -9,15 +9,24 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: deploy
-      - key: SPRING_DATASOURCE_URL
+      # Build JDBC URL from discrete DB fields to avoid non-jdbc URL formats.
+      - key: DB_HOST
         fromDatabase:
           name: genealogy-postgres
-          property: connectionString
-      - key: SPRING_DATASOURCE_USERNAME
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: genealogy-postgres
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: genealogy-postgres
+          property: database
+      - key: DB_USER
         fromDatabase:
           name: genealogy-postgres
           property: user
-      - key: SPRING_DATASOURCE_PASSWORD
+      - key: DB_PASSWORD
         fromDatabase:
           name: genealogy-postgres
           property: password

@@ -27,9 +27,12 @@ SPRING_PROFILES_ACTIVE=deploy
 
 ### Bắt buộc
 - `SPRING_PROFILES_ACTIVE=deploy`
-- `SPRING_DATASOURCE_URL`
-- `SPRING_DATASOURCE_USERNAME`
-- `SPRING_DATASOURCE_PASSWORD`
+- `DB_HOST`
+- `DB_PORT`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+  (hoặc set trực tiếp `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD` nếu bạn tự quản lý JDBC URL)
 - `APP_JWT_SECRET`
 
 ### Khuyến nghị
@@ -57,7 +60,7 @@ Repo đã có sẵn `deploy/render.yaml` để Render tạo đồng thời:
 - 1 Web Service (`genealogy-api`)
 - 1 PostgreSQL database (`genealogy-postgres`)
 
-Các biến DB được map tự động từ resource database sang web service.
+Các biến DB được map theo dạng host/port/database/user/password để app tự tạo JDBC URL hợp lệ (`jdbc:postgresql://...`).
 
 ---
 
