@@ -164,6 +164,7 @@ Kỳ vọng có các bảng:
 ### D. Checklist lỗi DB thường gặp
 - `URL must start with 'jdbc'`
   - Kiểm tra lại biến `DB_HOST/DB_PORT/DB_NAME` hoặc `SPRING_DATASOURCE_URL`.
+  - Nếu Render set `SPRING_DATASOURCE_URL` dạng `postgres://...` (không có `jdbc:`) thì ứng dụng sẽ tự chuẩn hóa thành `jdbc:postgresql://...` khi khởi động. Nếu vẫn lỗi, kiểm tra lại format env và giá trị mà Render thực sự truyền vào.
 - `password authentication failed`
   - Kiểm tra `DB_USER/DB_PASSWORD` map đúng từ Render database.
 - `connection timeout`

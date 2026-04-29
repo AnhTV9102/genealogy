@@ -9,6 +9,20 @@ services:
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: deploy
+      # Render Postgres có thể truyền URL dạng "postgres://..." (không phải JDBC URL).
+      # Ứng dụng sẽ tự chuẩn hóa thành "jdbc:postgresql://..." nếu thiếu prefix `jdbc:`.
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: genealogy-postgres
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: genealogy-postgres
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: genealogy-postgres
+          property: password
       # Build JDBC URL from discrete DB fields to avoid non-jdbc URL formats.
       - key: DB_HOST
         fromDatabase:
