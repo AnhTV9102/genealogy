@@ -9,14 +9,19 @@ import org.springframework.data.repository.query.Param;
 public interface JpaRelationshipRepository extends JpaRepository<RelationshipEntity, Long> {
 
   @Query(
-      "SELECT COUNT(r) > 0 FROM RelationshipEntity r WHERE r.fromPersonId = :fromPersonId AND r.toPersonId = :toPersonId AND r.type = :type")
+      "SELECT COUNT(r) > 0 "
+          + "FROM RelationshipEntity r "
+          + "WHERE r.fromPersonId = :fromPersonId "
+          + "AND r.toPersonId = :toPersonId "
+          + "AND r.type = :type")
   boolean existsByFromPersonIdAndToPersonIdAndType(
       @Param("fromPersonId") Long fromPersonId,
       @Param("toPersonId") Long toPersonId,
       @Param("type") String type);
 
   @Query(
-      "SELECT r FROM RelationshipEntity r WHERE r.fromPersonId = :personId OR r.toPersonId = :personId")
+      "SELECT r FROM RelationshipEntity r "
+          + "WHERE r.fromPersonId = :personId OR r.toPersonId = :personId")
   List<RelationshipEntity> findByPersonId(@Param("personId") Long personId);
 
   @Query(
@@ -28,6 +33,7 @@ public interface JpaRelationshipRepository extends JpaRepository<RelationshipEnt
   List<RelationshipEntity> findChildrenByPersonId(@Param("personId") Long personId);
 
   @Query(
-      "SELECT r FROM RelationshipEntity r WHERE (r.fromPersonId = :personId OR r.toPersonId = :personId) AND r.type = 'SPOUSE_OF'")
+      "SELECT r FROM RelationshipEntity r "
+          + "WHERE (r.fromPersonId = :personId OR r.toPersonId = :personId) AND r.type = 'SPOUSE_OF'")
   List<RelationshipEntity> findSpouseByPersonId(@Param("personId") Long personId);
 }

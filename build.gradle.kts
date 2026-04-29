@@ -69,7 +69,10 @@ spotless {
 
 checkstyle {
 	toolVersion = "10.12.4"
-	configFile = file("config/checkstyle/checkstyle.xml")
+	configDirectory.set(rootProject.file("config/checkstyle"))
+
+	configProperties["checkstyle.suppressions.file"] =
+		rootProject.file("config/checkstyle/suppressions.xml").absolutePath
 }
 
 tasks.withType<Checkstyle>().configureEach {
