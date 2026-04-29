@@ -108,3 +108,65 @@ Hoặc set env:
 ```bash
 SPRING_PROFILES_ACTIVE=local ./gradlew bootRun
 ```
+
+---
+
+## 10) Check DB trên Render (rất quan trọng)
+
+### A. Kiểm tra từ log của Web Service
+Sau khi deploy, vào **Render > genealogy-api > Logs** và kiểm tra:
+- Không còn lỗi `URL must start with 'jdbc'`
+- Có log Flyway migrate thành công (version `V1__Initial_schema.sql`)
+- Không có lỗi authentication/timeout tới PostgreSQL
+
+### B. Kiểm tra health endpoint
+Dùng endpoint:
+
+```bash
+GET /actuator/health
+```
+
+Kỳ vọng:
+- HTTP 200
+- Trạng thái `UP`
+
+### C. Kiểm tra trực tiếp database bằng psql
+Vào **Render > genealogy-postgres > Connect** lấy External/Internal connection info rồi chạy:
+
+```bash
+psql "postgresql://<USER>:<PASSWORD>@<HOST>:<PORT>/<DB_NAME>?sslmode=require"
+```
+
+Sau đó kiểm tra nhanh:
+
+```sql
+-- danh sách bảng
+\dt
+
+-- kiểm tra schema chính
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+ORDER BY table_name;
+
+-- kiểm tra dữ liệu migration của Flyway
+SELECT installed_rank, version, description, success
+FROM flyway_schema_history
+ORDER BY installed_rank;
+```
+
+Kỳ vọng có các bảng:
+- `persons`
+- `relationships`
+- `person_tree`
+- `flyway_schema_history`
+
+### D. Checklist lỗi DB thường gặp
+- `URL must start with 'jdbc'`
+  - Kiểm tra lại biến `DB_HOST/DB_PORT/DB_NAME` hoặc `SPRING_DATASOURCE_URL`.
+- `password authentication failed`
+  - Kiểm tra `DB_USER/DB_PASSWORD` map đúng từ Render database.
+- `connection timeout`
+  - Kiểm tra app đang dùng **Internal Database URL** trong cùng region/project.
+- `relation does not exist`
+  - Flyway chưa chạy hoặc migration lỗi; xem lại startup logs.
