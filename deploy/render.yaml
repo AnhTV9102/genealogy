@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: genealogy-api
+    runtime: docker
+    plan: free
+    dockerfilePath: ./deploy/Dockerfile
+    autoDeploy: true
+    healthCheckPath: /actuator/health
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: deploy
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: genealogy-postgres
+          property: connectionString
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: genealogy-postgres
+          property: user
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: genealogy-postgres
+          property: password
+      - key: APP_JWT_SECRET
+        generateValue: true
+      - key: APP_JWT_EXPIRATION
+        value: "86400000"
+
+databases:
+  - name: genealogy-postgres
+    plan: free
+    databaseName: genealogy
+    user: genealogy
