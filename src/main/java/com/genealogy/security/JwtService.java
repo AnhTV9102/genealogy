@@ -30,7 +30,9 @@ public class JwtService {
     Map<String, Object> claims = new HashMap<>();
     claims.put(
         "roles",
-        user.getRoles().stream().map(RoleEntity::getCode).collect(Collectors.toCollection(LinkedHashSet::new)));
+        user.getRoles().stream()
+            .map(RoleEntity::getCode)
+            .collect(Collectors.toCollection(LinkedHashSet::new)));
     claims.put(
         "permissions",
         user.getRoles().stream()
@@ -53,7 +55,8 @@ public class JwtService {
     return resolver.apply(claims);
   }
 
-  public boolean isTokenValid(String token, org.springframework.security.core.userdetails.UserDetails user) {
+  public boolean isTokenValid(
+      String token, org.springframework.security.core.userdetails.UserDetails user) {
     String username = extractUsername(token);
     return username.equals(user.getUsername()) && !isTokenExpired(token);
   }
@@ -84,11 +87,16 @@ public class JwtService {
   }
 
   private Claims extractAllClaims(String token) {
-    return Jwts.parser().verifyWith((javax.crypto.SecretKey) getSigningKey()).build().parseSignedClaims(token).getPayload();
+    return Jwts.parser()
+        .verifyWith((javax.crypto.SecretKey) getSigningKey())
+        .build()
+        .parseSignedClaims(token)
+        .getPayload();
   }
 
   private Key getSigningKey() {
-    byte[] keyBytes = Decoders.BASE64.decode(Base64.getEncoder().encodeToString(jwtSecret.getBytes()));
+    byte[] keyBytes =
+        Decoders.BASE64.decode(Base64.getEncoder().encodeToString(jwtSecret.getBytes()));
     return Keys.hmacShaKeyFor(keyBytes);
   }
 }

@@ -26,7 +26,8 @@ public class LineageAccessService {
     if (member == null) {
       return false;
     }
-    if ("OWNER".equalsIgnoreCase(member.getRoleCode()) || "MANAGER".equalsIgnoreCase(member.getRoleCode())) {
+    if ("OWNER".equalsIgnoreCase(member.getRoleCode())
+        || "MANAGER".equalsIgnoreCase(member.getRoleCode())) {
       return true;
     }
     return lineageMemberPermissionRepository.existsByIdLineageIdAndIdUserIdAndIdPermissionCode(

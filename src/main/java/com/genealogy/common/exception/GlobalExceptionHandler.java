@@ -69,10 +69,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException ex) {
     ErrorResponse error =
         new ErrorResponse(
-            HttpStatus.FORBIDDEN.value(),
-            "Forbidden",
-            "Access denied",
-            LocalDateTime.now());
+            HttpStatus.FORBIDDEN.value(), "Forbidden", "Access denied", LocalDateTime.now());
     return new ResponseEntity<>(error, HttpStatus.FORBIDDEN);
   }
 

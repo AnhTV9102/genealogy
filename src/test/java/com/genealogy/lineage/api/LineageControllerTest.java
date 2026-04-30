@@ -48,7 +48,9 @@ class LineageControllerTest {
   }
 
   @Test
-  @WithMockUser(username = "owner1", roles = {"MEMBER"})
+  @WithMockUser(
+      username = "owner1",
+      roles = {"MEMBER"})
   void authenticatedUser_canCreateLineage() throws Exception {
     when(lineageService.createLineage("PhamFamily", "owner1"))
         .thenReturn(new LineageResponse(1L, "PhamFamily", "owner1"));

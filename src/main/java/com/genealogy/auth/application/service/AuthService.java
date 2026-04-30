@@ -105,13 +105,16 @@ public class AuthService {
         RefreshTokenEntity.builder()
             .user(user)
             .token(refreshToken)
-            .expiryAt(LocalDateTime.now().plus(Duration.ofMillis(jwtService.getRefreshExpirationMs())))
+            .expiryAt(
+                LocalDateTime.now().plus(Duration.ofMillis(jwtService.getRefreshExpirationMs())))
             .revoked(false)
             .build();
     refreshTokenRepository.save(refreshTokenEntity);
 
     Set<String> roles =
-        user.getRoles().stream().map(RoleEntity::getCode).collect(Collectors.toCollection(java.util.LinkedHashSet::new));
+        user.getRoles().stream()
+            .map(RoleEntity::getCode)
+            .collect(Collectors.toCollection(java.util.LinkedHashSet::new));
 
     return new AuthResponse(
         accessToken, refreshToken, "Bearer", jwtService.getAccessExpirationMs(), roles);

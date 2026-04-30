@@ -1,7 +1,6 @@
 package com.genealogy.security;
 
 import com.genealogy.auth.infrastructure.persistence.entity.PermissionEntity;
-import com.genealogy.auth.infrastructure.persistence.entity.RoleEntity;
 import com.genealogy.auth.infrastructure.persistence.entity.UserEntity;
 import com.genealogy.auth.infrastructure.persistence.repository.JpaUserRepository;
 import java.util.Set;

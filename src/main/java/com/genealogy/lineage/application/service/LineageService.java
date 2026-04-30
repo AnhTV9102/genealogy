@@ -44,9 +44,13 @@ public class LineageService {
   @Transactional
   public void addMember(Long lineageId, Long userId, String roleCode) {
     LineageEntity lineage =
-        lineageRepository.findById(lineageId).orElseThrow(() -> new ResourceNotFoundException("Lineage", lineageId));
+        lineageRepository
+            .findById(lineageId)
+            .orElseThrow(() -> new ResourceNotFoundException("Lineage", lineageId));
     UserEntity user =
-        userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", userId));
+        userRepository
+            .findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User", userId));
     LineageMemberEntity member =
         LineageMemberEntity.builder()
             .id(new LineageMemberId(lineageId, userId))

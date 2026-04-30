@@ -57,7 +57,12 @@ class AdminControllerTest {
                 .content(
                     objectMapper.writeValueAsString(
                         java.util.Map.of(
-                            "username", "user1", "email", "u1@example.com", "password", "password123"))))
+                            "username",
+                            "user1",
+                            "email",
+                            "u1@example.com",
+                            "password",
+                            "password123"))))
         .andExpect(status().isNoContent());
   }
 
