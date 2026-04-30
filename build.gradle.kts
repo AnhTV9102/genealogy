@@ -27,7 +27,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 
 	// 🔹 Security
-//	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 
 	// 🔹 Data
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -55,8 +55,10 @@ dependencies {
 	annotationProcessor("org.projectlombok:lombok")
 
 	// 🔹 Test
-//	testImplementation("org.springframework.boot:spring-boot-starter-test")
-//	testImplementation("org.springframework.security:spring-security-test")
+	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.security:spring-security-test")
+	testRuntimeOnly("com.h2database:h2")
+	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 spotless {
@@ -103,4 +105,8 @@ tasks.withType<JavaCompile> {
 
 tasks.named("check") {
 	dependsOn("spotlessCheck")
+}
+
+tasks.test {
+	useJUnitPlatform()
 }
