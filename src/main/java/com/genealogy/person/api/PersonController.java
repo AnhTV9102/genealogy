@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,38 +23,45 @@ public class PersonController {
   private final RelationshipService relationshipService;
 
   @PostMapping
+  @PreAuthorize("hasAuthority('PERSON_CREATE')")
   public PersonResponse create(@RequestBody @Valid CreatePersonRequest request) {
     return personService.create(request);
   }
 
   @GetMapping
+  @PreAuthorize("hasAuthority('PERSON_READ')")
   public Page<PersonResponse> listAll(Pageable pageable) {
     return personService.listAll(pageable);
   }
 
   @GetMapping("/{id}")
+  @PreAuthorize("hasAuthority('PERSON_READ')")
   public PersonResponse getById(@PathVariable Long id) {
     return personService.getById(id);
   }
 
   @PutMapping("/{id}")
+  @PreAuthorize("hasAuthority('PERSON_UPDATE')")
   public PersonResponse update(
       @PathVariable Long id, @RequestBody @Valid UpdatePersonRequest request) {
     return personService.update(id, request);
   }
 
   @DeleteMapping("/{id}")
+  @PreAuthorize("hasAuthority('PERSON_DELETE')")
   public ResponseEntity<Void> deleteById(@PathVariable Long id) {
     personService.deleteById(id);
     return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/{personId}/children")
+  @PreAuthorize("hasAuthority('PERSON_READ')")
   public List<PersonResponse> getChildren(@PathVariable Long personId) {
     return relationshipService.getChildren(personId);
   }
 
   @GetMapping("/{personId}/spouse")
+  @PreAuthorize("hasAuthority('PERSON_READ')")
   public ResponseEntity<PersonResponse> getSpouse(@PathVariable Long personId) {
     PersonResponse spouse = relationshipService.getSpouse(personId);
     if (spouse == null) {
@@ -63,12 +71,14 @@ public class PersonController {
   }
 
   @GetMapping("/{personId}/ancestors")
+  @PreAuthorize("hasAuthority('PERSON_READ')")
   public List<PersonResponse> getAncestors(
       @PathVariable Long personId, @RequestParam(required = false) Integer generations) {
     return relationshipService.getAncestors(personId, generations);
   }
 
   @GetMapping("/{personId}/descendants")
+  @PreAuthorize("hasAuthority('PERSON_READ')")
   public List<PersonResponse> getDescendants(
       @PathVariable Long personId, @RequestParam(required = false) Integer generations) {
     return relationshipService.getDescendants(personId, generations);
